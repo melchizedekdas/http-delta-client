@@ -4,15 +4,12 @@
 #include "resource.h"
 #include "constants.h"
 
-#define RESOURCES_PREFIX "../web-inf"
+#define RESOURCES_PREFIX "../cache"
 
 #define META_SUFFIX "_meta"
 #define META_EXTENSION ".txt"
 
 #define RESOURCE_EXTENSION ".html"
-
-#define VERSION_ID_SEPARATOR "_"
-#define DELTA_EXTENSION ".delta"
 
 #define VERSION_ID_SIZE 10
 
@@ -24,7 +21,7 @@ char *get_local_version_id(char *resource_path){
 	strcat(file_path,resource_path);
 	strcat(file_path,META_SUFFIX);
 	strcat(file_path,META_EXTENSION);
-	FILE *fptr = fopen(resource_path, "r");
+	FILE *fptr = fopen(file_path, "r");
 	if (fptr == NULL)
 	{
 		return NULL;
@@ -45,7 +42,23 @@ char *get_local_version_id(char *resource_path){
 }
 
 int *save_current_version_id(char *resource_path, char *version_id){
-
+	// Open file
+	char *file_path=(char *)malloc(sizeof(char)*(strlen(RESOURCES_PREFIX)+strlen(resource_path)+strlen(META_SUFFIX)+strlen(META_EXTENSION)+1));
+	strcpy(file_path,RESOURCES_PREFIX);
+	strcat(file_path,resource_path);
+	strcat(file_path,META_SUFFIX);
+	strcat(file_path,META_EXTENSION);
+	FILE *fptr = fopen(file_path, "w");
+	if (fptr == NULL)
+	{
+		return FAILURE;
+	}
+	// Write contents to file
+	if(!fprintf(fptr,"%s",version_id)){
+		return FAILURE;
+	}
+	fclose(fptr);
+	return SUCCESS;
 }
 
 int get_resource(char *resource_path, char *resource_data){
@@ -70,5 +83,20 @@ int get_resource(char *resource_path, char *resource_data){
 }
 
 int save_resource(char *resource_path, char *resource_data){
-
+	// Open file
+	char *file_path=(char *)malloc(sizeof(char)*(strlen(RESOURCES_PREFIX)+strlen(resource_path)+strlen(RESOURCE_EXTENSION)+1));
+	strcpy(file_path,RESOURCES_PREFIX);
+	strcat(file_path,resource_path);
+	strcat(file_path,RESOURCE_EXTENSION);
+	FILE *fptr = fopen(file_path, "w");
+	if (fptr == NULL)
+	{
+		return FAILURE;
+	}
+	// Write contents to file
+	if(!fprintf(fptr,"%s",resource_data)){
+		return FAILURE;
+	}
+	fclose(fptr);
+	return SUCCESS;
 }
