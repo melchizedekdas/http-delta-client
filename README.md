@@ -1,2 +1,2 @@
 # http-delta-client
-client to implement parts response to improve caching
+client to implement delta response to improve caching
