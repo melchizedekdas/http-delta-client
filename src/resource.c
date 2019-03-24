@@ -79,6 +79,7 @@ int get_resource(char *resource_path, char *resource_data){
 		chars_read+=strlen(resource_content+chars_read);
 	}
 	fclose(fptr);
+	resource_data=resource_content;
 	return chars_read;
 }
 
@@ -99,4 +100,8 @@ int save_resource(char *resource_path, char *resource_data){
 	}
 	fclose(fptr);
 	return SUCCESS;
+}
+
+int delete_resource(char *resource_path){
+	//to be implemented
 }

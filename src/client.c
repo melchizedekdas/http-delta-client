@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "tcp_socket.h"
 #include "http.h"
-#include "http_request.h"
+#include "http_response.h"
 #include "constants.h"
 
 #define SERVER_IP "127.0.0.1"
@@ -51,7 +51,7 @@ int main(){
 		return FAILURE;
 	}
 
-	if(process_response(response)==FAILURE){
+	if(process_response(request,response)==FAILURE){
 		printf("Error processing response");
 		return FAILURE;
 	}
