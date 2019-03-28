@@ -4,6 +4,7 @@
 #include "resource.h"
 #include "constants.h"
 #include<string.h>
+#include<stdlib.h>
 
 #define RANGE_START "["
 #define RANGE_END "]"
@@ -67,10 +68,10 @@ int tokenize_delta(char *delta, struct delta_list **delta_head){
 	while(*delta_pointer){
 		current_node=(struct delta_list *)malloc(sizeof(struct delta_list));
 		strtok_r(delta_pointer, RANGE_START, &delta_pointer);
-		current_node->byte_start=str_to_long(strtok_r(delta_pointer, RANGE_SEPARATOR, &delta_pointer));
-		current_node->byte_end=str_to_long(strtok_r(delta_pointer, RANGE_END, &delta_pointer));
+		current_node->byte_start=atol(strtok_r(delta_pointer, RANGE_SEPARATOR, &delta_pointer));
+		current_node->byte_end=atol(strtok_r(delta_pointer, RANGE_END, &delta_pointer));
 		strtok_r(delta_pointer, SIZE_START, &delta_pointer);
-		size=str_to_long(strtok_r(delta_pointer, SIZE_END, &delta_pointer));
+		size=atol(strtok_r(delta_pointer, SIZE_END, &delta_pointer));
 		current_node->content=(char *)malloc(sizeof(char)*(size+1));
 		for(i=0;i<size;i++){
 			current_node->content[i]=*delta_pointer++;
