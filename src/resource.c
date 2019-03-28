@@ -104,4 +104,6 @@ int save_resource(char *resource_path, char *resource_data){
 
 int delete_resource(char *resource_path){
 	//to be implemented
+
+	return SUCCESS;
 }
