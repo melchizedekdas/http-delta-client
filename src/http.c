@@ -96,69 +96,27 @@ char *status_msg(char *status_code){
 	}
 }
 int generate_request(struct http_request *request, char *request_data){
-	//server code below.. needs to be implemented.
+	char *request_ptr=request_data;
 
+	//first line of request
+	request_ptr=strcpy_return_end(request_ptr,GET);
+	request_ptr=strcpy_return_end(request_ptr,SPACE);
+	request_ptr=strcpy_return_end(request_ptr,request->path);
+	request_ptr=strcpy_return_end(request_ptr,SPACE);
+	request_ptr=strcpy_return_end(request_ptr,HTTP_V);
 
-	char *response_ptr=response_data, *status_code=response->status_code;
-	response_ptr=strcpy_return_end(response_ptr,HTTP_V);
-	response_ptr=strcpy_return_end(response_ptr,SPACE);
-	response_ptr=strcpy_return_end(response_ptr,status_code);
-	response_ptr=strcpy_return_end(response_ptr,SPACE);
-	response_ptr=strcpy_return_end(response_ptr,status_msg(status_code));
-	response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
+	request_ptr=strcpy_return_end(request_ptr,NEW_LINE);
 
-	if(!strcmp(status_code,RESOURCE_FOUND)){
-		//Content length header
-		response_ptr=strcpy_return_end(response_ptr,CONTENT_LENGTH);
-		response_ptr=strcpy_return_end(response_ptr,COLON);
-		char content_length_str[LENGTH_BUFFER];
-		itoa(response->content_length, content_length_str, 10);
-		response_ptr=strcpy_return_end(response_ptr,content_length_str);
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
+	//E-tag
+	request_ptr=strcpy_return_end(request_ptr,VERSION_ID_REQ);
+	request_ptr=strcpy_return_end(request_ptr,HEADER_DELIM);
+	request_ptr=strcpy_return_end(request_ptr,request->version_id);
+	request_ptr=strcpy_return_end(request_ptr,NEW_LINE);
 
-		//E_TAG header
-		response_ptr=strcpy_return_end(response_ptr,E_TAG);
-		response_ptr=strcpy_return_end(response_ptr,COLON);
-		response_ptr=strcpy_return_end(response_ptr,response->version_id);
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-
-		//Body
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-		response_ptr=strcpy_return_end(response_ptr,response->body);
-		*response_ptr=0;
-	}
-	else if(!strcmp(status_code,SAME_VERSION)){
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-	}
-	else if(!strcmp(status_code,PARTS_FOUND)){
-		//Content length header
-		response_ptr=strcpy_return_end(response_ptr,CONTENT_LENGTH);
-		response_ptr=strcpy_return_end(response_ptr,COLON);
-		char content_length_str[LENGTH_BUFFER];
-		itoa(response->content_length, content_length_str, 10);
-		response_ptr=strcpy_return_end(response_ptr,content_length_str);
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-
-		//E_TAG header
-		response_ptr=strcpy_return_end(response_ptr,E_TAG);
-		response_ptr=strcpy_return_end(response_ptr,COLON);
-		response_ptr=strcpy_return_end(response_ptr,response->version_id);
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-
-		//Body
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-		response_ptr=strcpy_return_end(response_ptr,response->body);
-		*response_ptr=0;
-	}
-	else if(!strcmp(status_code,RESOURCE_NOT_FOUND)){
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-	}
-	else if(!strcmp(status_code,BAD_REQUEST)){
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-	}
-	else{
-		response_ptr=strcpy_return_end(response_ptr,NEW_LINE);
-	}
+	//ACCEPT-ENCODING
+	request_ptr=strcpy_return_end(request_ptr,ACCEPT_ENCODING);
+	request_ptr=strcpy_return_end(request_ptr,HEADER_DELIM);
+	request_ptr=strcpy_return_end(request_ptr,DELTA_ENCODING);
 
 	return SUCCESS;
 }
