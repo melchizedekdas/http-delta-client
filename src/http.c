@@ -15,7 +15,7 @@
 #define DELTA_ENCODING "Delta"
 #define CONTENT_LENGTH "Content-Length"
 #define E_TAG "ETag"
-#define LENGTH_BUFFER 10
+#define NEW_LINE_CHAR '\n'
 
 int parse_response(struct http_response *response, char *response_data){
 	//server code below.. needs to be implemented.
@@ -23,49 +23,39 @@ int parse_response(struct http_response *response, char *response_data){
 
 	char *overall_save_ptr;
 	//parse first line of request
-	if(strcmp(GET,strtok_r(request_data, SPACE, &overall_save_ptr))){
-		//1st token of first line is method name. only GET is supported.
+	if(strcmp(HTTP_V,strtok_r(response_data, SPACE, &overall_save_ptr))){
+		//1st token of first line is HTTP version
 		return BAD_REQUEST;
 	}
-	//2nd token of first line is path
-	request->path=strtok_r(overall_save_ptr, SPACE, &overall_save_ptr);
-	if(strcmp(HTTP_V,strtok_r(overall_save_ptr, NEW_LINE, &overall_save_ptr))){
-		//3rd token of first line is http version number. only http/1.1 is supported.
-		return BAD_REQUEST;
-	}
+	//2nd token of first line is status code
+	response->status_code=strtok_r(overall_save_ptr, SPACE, &overall_save_ptr);
+	//3rd token is status msg.
+	strtok_r(overall_save_ptr, NEW_LINE, &overall_save_ptr);
+
 	//parse headers
 	char *header = strtok_r(overall_save_ptr, NEW_LINE, &overall_save_ptr);
 	char *header_key, *header_value, *header_save_ptr;
 
-	request->accept_parts=false;
 	while (header != NULL) {
 		//code to parse header line
 		if(strlen(header)==0){
 			//Empty line. Implies header over
 			break;
 		}
-		header_key=strtok_r(header, HEADER_DELIM, &header_save_ptr);
-		header_value=strtok_r(header_save_ptr, HEADER_DELIM, &header_save_ptr);
+		header_key=strtok_r(header, COLON, &header_save_ptr);
+		header_value=strtok_r(header_save_ptr, COLON, &header_save_ptr);
 		//Use header key and value
-		if(!strcmp(header_key,VERSION_ID_REQ)){
-			//Version id header
-			request->version_id=header_value;
+		if(!strcmp(header_key,E_TAG)){
+			//E-TAG header
+			response->version_id=header_value;
 		}
-		else if(!strcmp(header_key,ACCEPT_ENCODING)){
-			//accept encoding header
-			char *encoding_save_ptr;
-			char *encoding=strtok_r(header_value, ENCODING_DELIM, &encoding_save_ptr);
-			while (encoding != NULL) {
-				//Process each encoding
-				if(!strcmp(encoding,DELTA_ENCODING)){
-					//accepts delta encoding
-					request->accept_parts=true;
-				}
-				encoding=strtok_r(encoding_save_ptr, ENCODING_DELIM, &encoding_save_ptr);
-			}
+		if(*overall_save_ptr==NEW_LINE_CHAR){
+			overall_save_ptr++;
+			break;
 		}
 		header = strtok_r(overall_save_ptr, NEW_LINE, &overall_save_ptr);
 	}
+	response->body=overall_save_ptr;
 	return SUCCESS;
 }
 char *strcpy_return_end(char *dest, char *source){

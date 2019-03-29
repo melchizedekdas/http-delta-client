@@ -12,7 +12,6 @@ struct http_request{
 
 struct http_response{
 	char *version_id, *status_code, *body;
-	int content_length;
 };
 
 //returns success or error code
