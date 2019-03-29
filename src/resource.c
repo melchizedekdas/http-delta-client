@@ -103,7 +103,11 @@ int save_resource(char *resource_path, char *resource_data){
 }
 
 int delete_resource(char *resource_path){
-	if(remove(resource_path)){
+	char *file_path=(char *)malloc(sizeof(char)*(strlen(RESOURCES_PREFIX)+strlen(resource_path)+strlen(RESOURCE_EXTENSION)+1));
+	strcpy(file_path,RESOURCES_PREFIX);
+	strcat(file_path,resource_path);
+	strcat(file_path,RESOURCE_EXTENSION);
+	if(remove(file_path)){
 		return FAILURE;
 	}
 	return SUCCESS;
