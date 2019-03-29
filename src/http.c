@@ -75,26 +75,6 @@ char *strcpy_return_end(char *dest, char *source){
 	}
 	return dest+i;
 }
-char *status_msg(char *status_code){
-	if(!strcmp(status_code,RESOURCE_FOUND)){
-		return "OK";
-	}
-	else if(!strcmp(status_code,SAME_VERSION)){
-		return "Not Modified";
-	}
-	else if(!strcmp(status_code,PARTS_FOUND)){
-		return "Delta Encoding";
-	}
-	else if(!strcmp(status_code,RESOURCE_NOT_FOUND)){
-		return "Not found";
-	}
-	else if(!strcmp(status_code,BAD_REQUEST)){
-		return "Bad request";
-	}
-	else{
-		return "Internal Error";
-	}
-}
 int generate_request(struct http_request *request, char *request_data){
 	char *request_ptr=request_data;
 
@@ -107,16 +87,17 @@ int generate_request(struct http_request *request, char *request_data){
 
 	request_ptr=strcpy_return_end(request_ptr,NEW_LINE);
 
-	//E-tag
-	request_ptr=strcpy_return_end(request_ptr,VERSION_ID_REQ);
-	request_ptr=strcpy_return_end(request_ptr,HEADER_DELIM);
-	request_ptr=strcpy_return_end(request_ptr,request->version_id);
-	request_ptr=strcpy_return_end(request_ptr,NEW_LINE);
+	if(request->accept_parts){
+		//E-tag
+		request_ptr=strcpy_return_end(request_ptr,VERSION_ID_REQ);
+		request_ptr=strcpy_return_end(request_ptr,HEADER_DELIM);
+		request_ptr=strcpy_return_end(request_ptr,request->version_id);
+		request_ptr=strcpy_return_end(request_ptr,NEW_LINE);
 
-	//ACCEPT-ENCODING
-	request_ptr=strcpy_return_end(request_ptr,ACCEPT_ENCODING);
-	request_ptr=strcpy_return_end(request_ptr,HEADER_DELIM);
-	request_ptr=strcpy_return_end(request_ptr,DELTA_ENCODING);
-
+		//ACCEPT-ENCODING
+		request_ptr=strcpy_return_end(request_ptr,ACCEPT_ENCODING);
+		request_ptr=strcpy_return_end(request_ptr,HEADER_DELIM);
+		request_ptr=strcpy_return_end(request_ptr,DELTA_ENCODING);
+	}
 	return SUCCESS;
 }
