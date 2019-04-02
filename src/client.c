@@ -23,15 +23,15 @@ int main(){
 	char *path="";
 
 	char *local_version_id=get_local_version_id(path);
-	request->path=path;
+	request.path=path;
 	if(local_version_id!=NULL){
-		request->accept_parts=true;
-		request->version_id=local_version_id;
+		request.accept_parts=true;
+		request.version_id=local_version_id;
 	}
 	else{
-		request->accept_parts=false;
+		request.accept_parts=false;
 	}
-	if(generate_request(request,request_data)==FAILURE){
+	if(generate_request(&request,request_data)==FAILURE){
 		printf("Error creating request");
 		return FAILURE;
 	}
@@ -46,12 +46,12 @@ int main(){
 		return FAILURE;
 	}
 
-	if(parse_response(response, response_data)==FAILURE){
+	if(parse_response(&response, response_data)==FAILURE){
 		printf("Error parsing response");
 		return FAILURE;
 	}
 
-	if(process_response(request,response)==FAILURE){
+	if(process_response(&request,&response)==FAILURE){
 		printf("Error processing response");
 		return FAILURE;
 	}

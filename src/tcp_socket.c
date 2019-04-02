@@ -9,6 +9,7 @@
 #include "time.h"
 #include "dirent.h"
 #include "netdb.h"
+#include <arpa/inet.h>
 
 int connect_to_server(char *server_ip,int server_port){
 	int sockfd;

@@ -14,7 +14,7 @@
 #define VERSION_ID_SIZE 10
 
 char *get_local_version_id(char *resource_path){
-	char version_id[VERSION_ID_SIZE];
+	char *version_id=(char *)malloc(sizeof(char)*VERSION_ID_SIZE);
 	// Open file
 	char *file_path=(char *)malloc(sizeof(char)*(strlen(RESOURCES_PREFIX)+strlen(resource_path)+strlen(META_SUFFIX)+strlen(META_EXTENSION)+1));
 	strcpy(file_path,RESOURCES_PREFIX);
