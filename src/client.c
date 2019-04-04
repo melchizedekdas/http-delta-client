@@ -20,9 +20,15 @@ int main(){
 		return FAILURE;
 	}
 
-	char *path="";
+	char *path="index";
 
-	char *local_version_id=get_local_version_id(path);
+	//char *local_version_id=get_local_version_id(path);
+
+	char *local_version_id=(char *)malloc(sizeof(char)*10);
+	if(get_local_version_id(path,local_version_id)==FAILURE){
+		local_version_id=0;
+	}
+
 	request.path=path;
 	if(local_version_id!=NULL){
 		request.accept_parts=true;
@@ -36,6 +42,11 @@ int main(){
 		return FAILURE;
 	}
 
+	//for debug start
+	printf("[request begin]\n%s\n[request end]\n",request_data);
+	fflush(0);
+	//for debug end
+
 	if(send_request(client_socket, request_data)==FAILURE){
 		printf("Error sending request");
 		return FAILURE;
@@ -46,13 +57,13 @@ int main(){
 		return FAILURE;
 	}
 
+	//for debug start
+	printf("[response begin]\n%s\n[response end]\n",response_data);
+	fflush(0);
+	//for debug end
+
 	if(parse_response(&response, response_data)==FAILURE){
 		printf("Error parsing response");
-		return FAILURE;
-	}
-
-	if(process_response(&request,&response)==FAILURE){
-		printf("Error processing response");
 		return FAILURE;
 	}
 
@@ -61,5 +72,9 @@ int main(){
 		return FAILURE;
 	}
 
+	if(process_response(&request,&response)==FAILURE){
+		printf("Error processing response");
+		return FAILURE;
+	}
 	return SUCCESS;
 }

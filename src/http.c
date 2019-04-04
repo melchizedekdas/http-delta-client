@@ -18,17 +18,15 @@
 #define NEW_LINE_CHAR '\n'
 
 int parse_response(struct http_response *response, char *response_data){
-	//server code below.. needs to be implemented.
-
-
 	char *overall_save_ptr;
 	//parse first line of request
 	if(strcmp(HTTP_V,strtok_r(response_data, SPACE, &overall_save_ptr))){
 		//1st token of first line is HTTP version
-		return BAD_REQUEST;
+		return FAILURE;
 	}
 	//2nd token of first line is status code
 	response->status_code=strtok_r(overall_save_ptr, SPACE, &overall_save_ptr);
+
 	//3rd token is status msg.
 	strtok_r(overall_save_ptr, NEW_LINE, &overall_save_ptr);
 
@@ -48,6 +46,7 @@ int parse_response(struct http_response *response, char *response_data){
 		if(!strcmp(header_key,E_TAG)){
 			//E-TAG header
 			response->version_id=header_value;
+
 		}
 		if(*overall_save_ptr==NEW_LINE_CHAR){
 			overall_save_ptr++;
