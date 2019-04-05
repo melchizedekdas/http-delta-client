@@ -62,6 +62,7 @@ int process_response(struct http_request *request, struct http_response *respons
 }
 
 int tokenize_delta(char *delta, struct delta_list **delta_head){
+	*delta_head=0;
 	struct delta_list *previous_node=0, *current_node;
 	char *delta_pointer=delta, *content;
 	long size,i;
